@@ -1,0 +1,30 @@
+{
+  "name": "xmsport",
+  "version": "1.0.0",
+  "description": "XM Sport GitHub Actions Script",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chiupam/xmSport.git"
+  },
+  "keywords": [
+    "github-actions",
+    "automation",
+    "xiaomi-sport"
+  ],
+  "author": "chiupam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chiupam/xmSport/issues"
+  },
+  "homepage": "https://github.com/chiupam/xmSport#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.4.7"
+  }
+}

@@ -1,0 +1,73 @@
+name: 小米运动健康修改步数
+
+on:
+  schedule:
+    - cron: '55 14,15 * * *'  # UTC时间14:55和15:55运行，对应北京时间22:55和23:55
+  workflow_dispatch:     # 允许手动触发
+    inputs:
+      minStep:
+        description: '最小步数'
+        required: false
+        default: '10000'
+        type: string
+      maxStep:
+        description: '最大步数'
+        required: false
+        default: '19999'
+        type: string
+      enableNotify:
+        description: '是否启用通知功能'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5   # 设置超时限制
+    
+    # 避免并发执行
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1  # 浅克隆，提高速度
+        
+      - name: 设置Node.js环境
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'   # 启用npm缓存
+          
+      - name: 安装依赖
+        run: npm ci       # 使用ci而不是install，更快更可靠
+        
+      - name: 运行脚本
+        env:
+          PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          DATA_JSON: ${{ secrets.DATA_JSON }}
+          xmSportMinStep: ${{ github.event.inputs.minStep || secrets.xmSportMinStep || '10000' }}
+          xmSportMaxStep: ${{ github.event.inputs.maxStep || secrets.xmSportMaxStep || '19999' }}
+          ENABLE_NOTIFY: ${{ github.event.inputs.enableNotify || secrets.ENABLE_NOTIFY || 'false' }}
+          # 通知相关环境变量
+          SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
+          BARK_KEY: ${{ secrets.BARK_KEY }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+          WECOM_KEY: ${{ secrets.WECOM_KEY }}
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        run: node src/index.js
+      
+      - name: 处理结果
+        if: always()
+        run: |
+          echo "标准时间: $(date -u "+%Y/%m/%d %H:%M:%S (+0)")"
+          echo "北京时间: $(TZ='Asia/Shanghai' date "+%Y/%m/%d %H:%M:%S (+8)")"
+          echo "工作流执行状态: ${{ job.status }}" 
