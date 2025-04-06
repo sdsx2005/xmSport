@@ -159,3 +159,21 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
    ```bash
    npm run test:env
    ``` 
+
+## 🔄 Fork仓库自动同步
+
+如果你Fork了此仓库，可以启用自动同步功能，保持与上游仓库的更新一致：
+
+1. 在你Fork的仓库中，进入**Actions**标签页
+2. 你会看到一个名为**自动同步上游仓库**的工作流
+3. 点击**I understand my workflows, go ahead and enable them**启用工作流
+4. 现在，你的Fork仓库将每天自动与此上游仓库同步
+
+你也可以随时手动触发同步：
+1. 在你Fork的仓库中，进入**Actions**标签页
+2. 在左侧选择**自动同步上游仓库**工作流
+3. 点击**Run workflow**按钮，然后点击绿色的**Run workflow**按钮确认
+
+这样你的Fork仓库就会立即与上游仓库同步，获取最新的功能和修复。
+
+> **注意**：此工作流仅在Fork的仓库中运行，不会在原始仓库中执行。 
