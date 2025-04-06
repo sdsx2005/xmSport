@@ -1,4 +1,4 @@
-name: 小米运动健康修改步数
+name: 小米运动修改步数
 
 on:
   schedule:
@@ -22,9 +22,9 @@ on:
         type: boolean
 
 jobs:
-  run-script:
+  xmSport:
     runs-on: ubuntu-latest
-    timeout-minutes: 5   # 设置超时限制
+    timeout-minutes: 15   # 设置超时限制
     
     # 设置任务级环境变量
     env:
@@ -49,12 +49,21 @@ jobs:
           
       - name: 安装依赖
         run: npm ci       # 使用ci而不是install，更快更可靠
+      
+      - name: 读取数据模板文件
+        id: data-json
+        run: |
+          DATA_CONTENT=$(cat src/data.txt)
+          echo "DATA_JSON<<EOF" >> $GITHUB_ENV
+          echo "$DATA_CONTENT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          echo "✅ 已读取数据模板文件"
         
       - name: 运行脚本
         env:
           PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          DATA_JSON: ${{ secrets.DATA_JSON }}
+          # DATA_JSON由上一步自动设置，不再需要用户手动配置
           xmSportMinStep: ${{ github.event.inputs.minStep || secrets.xmSportMinStep || '10000' }}
           xmSportMaxStep: ${{ github.event.inputs.maxStep || secrets.xmSportMaxStep || '19999' }}
           ENABLE_NOTIFY: ${{ github.event.inputs.enableNotify || secrets.ENABLE_NOTIFY || 'false' }}

@@ -94,13 +94,13 @@ async function sendTelegram(botToken, chatId, title, content) {
   }
   
   try {
-    console.log(`🔄 正在发送Telegram消息到chat_id: ${chatId.substring(0, 3)}...`);
+    console.log(`🔄 正在发送Telegram消息...`);
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
     
-    // 使用纯文本模式发送，避免Markdown格式问题
+    // 只发送内容，避免重复标题
     const plainTextPayload = {
       chat_id: chatId,
-      text: `${title}\n\n${content}`,
+      text: content, // 不再包含标题，只发送内容
       parse_mode: '' // 不使用任何格式化
     };
     
@@ -108,7 +108,7 @@ async function sendTelegram(botToken, chatId, title, content) {
     const response = await axios.post(url, plainTextPayload);
     
     if (response.data && response.data.ok) {
-      console.log(`✅ Telegram通知发送成功 (message_id: ${response.data.result.message_id})`);
+      console.log(`✅ Telegram通知发送成功`);
       return { success: true };
     } else {
       console.error(`❌ Telegram API返回错误: ${JSON.stringify(response.data)}`);
@@ -129,13 +129,13 @@ async function sendTelegram(botToken, chatId, title, content) {
           const retryUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
           const retryPayload = {
             chat_id: chatId,
-            text: `${title}\n\n${content}`,
+            text: content, // 只发送内容
             parse_mode: '' // 不使用任何格式化
           };
           
           const retryResponse = await axios.post(retryUrl, retryPayload);
           if (retryResponse.data && retryResponse.data.ok) {
-            console.log(`✅ Telegram通知重新发送成功 (message_id: ${retryResponse.data.result.message_id})`);
+            console.log(`✅ Telegram通知重新发送成功`);
             return { success: true };
           }
         } catch (retryError) {
@@ -239,12 +239,12 @@ async function sendPushPlus(token, title, content) {
 
 /**
  * 发送通知到所有已配置的平台
- * @param {string} content - 通知内容
+ * @param {string} title - 通知标题
+ * @param {string} content - 通知内容（已包含标题信息）
  */
-async function sendNotification(content) {
+async function sendNotification(title, content) {
   try {    
     console.log('📣 正在发送通知...');
-    const title = getNotifyTitle();
     const notifyTasks = [];
     let notifyCount = 0;
     

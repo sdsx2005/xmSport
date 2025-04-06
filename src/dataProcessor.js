@@ -62,7 +62,12 @@ function processExistingTemplate(step, jsonTemplate) {
     const dateMatch = finddate.exec(processedData);
     if (dateMatch && dateMatch[1]) {
       processedData = processedData.replace(dateMatch[1], currentDate);
-      console.log(`📅 日期已更新: ${currentDate}`);
+      // 判断是否修改成功
+      if (finddate.exec(processedData) && finddate.exec(processedData)[1] === currentDate) {
+        console.log(`📅 日期已更新: ${currentDate}`);
+      } else {
+        console.warn('⚠️ 日期更新失败，请检查模板格式');
+      }
     } else {
       console.warn('⚠️ 无法找到日期字段，跳过日期更新');
     }
@@ -71,7 +76,12 @@ function processExistingTemplate(step, jsonTemplate) {
     const stepMatch = findstep.exec(processedData);
     if (stepMatch && stepMatch[1]) {
       processedData = processedData.replace(stepMatch[1], String(step));
-      console.log(`👣 步数已更新: ${step}`);
+      // 判断是否修改成功
+      if (findstep.exec(processedData) && findstep.exec(processedData)[1] === String(step)) {
+        console.log(`👣 步数已更新: ${step}`);
+      } else {
+        console.warn('⚠️ 步数更新失败，请检查模板格式');
+      }
     } else {
       console.warn('⚠️ 无法找到步数字段，跳过步数更新');
     }

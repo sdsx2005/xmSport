@@ -24,6 +24,7 @@ pids
 # 项目特定文件
 .env
 .env.local
+.env.*.local
 config.js
 config.json
 .history/
@@ -76,7 +77,6 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -86,7 +86,7 @@ typings/
 .idea/
 .vscode/
 *.swp
-*.swo 
+*.swo
 
 # 本地开发文件
 .DS_Store

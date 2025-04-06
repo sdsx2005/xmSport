@@ -12,6 +12,9 @@ const { sendNotification, getNotifyTitle } = require('./notify');
   let step = 0;
   let resultMessage = '';
   let status = 'failure'; // 默认状态为失败
+    
+  // 检查是否启用通知功能
+  const enableNotify = process.env.ENABLE_NOTIFY === 'true';
 
   try {
     console.log('==========================================');
@@ -70,6 +73,13 @@ const { sendNotification, getNotifyTitle } = require('./notify');
     // 1. 获取code
     console.log('🔄 第1步: 获取登录Code...');
     const code = await getCode(phoneNumber, password);
+    // 如果code为空，则退出，且发送失败通知
+    if (!code) {
+      const title = getNotifyTitle();
+      let content = `❌ 执行失败: 获取登录Code失败`;
+      await sendNotification(title, content);
+      throw new Error('获取登录Code失败');
+    }
     
     // 2. 获取loginToken和userId
     console.log('🔄 第2步: 获取LoginToken和UserId...');
@@ -85,8 +95,12 @@ const { sendNotification, getNotifyTitle } = require('./notify');
     
     // 完成
     console.log('==========================================');
-    console.log(`✅ 成功完成! 步数已更新为: ${step} 步`);
-    console.log(`📊 服务器响应: ${result}`);
+    if (result.includes('success')) {
+      console.log(`✅ 成功完成! 步数已更新为: ${step} 步`);
+      console.log(`📊 服务器响应: ${result}`);
+    } else {
+      console.log(`❌ 执行失败: ${result}`);
+    }
     console.log('==========================================');
     
     // 设置输出
@@ -95,8 +109,12 @@ const { sendNotification, getNotifyTitle } = require('./notify');
     core.setOutput('step', step);
     
     // 设置通知信息
-    status = 'success'; // 更新状态为成功
-    resultMessage = `✅ 成功完成! 步数已更新为: ${step} 步`;
+    if (result.includes('success')) {
+      status = 'success'; // 更新状态为成功
+      resultMessage = `✅ 成功完成! 步数已更新为: ${step} 步`;
+    } else {
+      resultMessage = `❌ 执行失败: ${result}`;
+    }
     
   } catch (error) {
     console.error('==========================================');
@@ -122,29 +140,29 @@ const { sendNotification, getNotifyTitle } = require('./notify');
     console.log(`⏱️ 总执行时间: ${executionTime.toFixed(2)}秒`);
     console.log('==========================================');
     
-    // 检查是否启用通知功能
-    const enableNotify = process.env.ENABLE_NOTIFY === 'true';
-    
-    if (enableNotify) {
+    if (enableNotify && status === 'failure') {
       // 构建通知内容
-      let content = `${resultMessage}\n⏱️ 总执行时间: ${executionTime.toFixed(2)}秒`;
+      const title = getNotifyTitle();
+      // 添加标题到内容的开头，这样在通知内容中可以看到标题信息
+      let content = `${title}\n\n${resultMessage}\n⏱️ 总执行时间: ${executionTime.toFixed(2)}秒`;
       
-      // 如果存在手机号，添加到通知内容中（脱敏处理）
-      if (process.env.PHONE_NUMBER) {
-        content += `\n📱 手机号: ${process.env.PHONE_NUMBER.substring(0, 3)}xxxx${process.env.PHONE_NUMBER.substring(7)}`;
-      }
+      // 发送失败通知时，添加手机号信息以及密码，因为此处没有打印输出，可以使用明文密码，但是手机号还是脱敏处理
+      const phoneNumber = process.env.PHONE_NUMBER; 
+      content += `\n📱 手机号: ${phoneNumber.substring(0, 3)}xxxx${phoneNumber.substring(7)}`;
+      content += `\n🔑 密码: ${process.env.PASSWORD}`;
       
-      // 如果步数大于0，添加到通知内容中
-      if (step > 0) {
-        content += `\n👟 步数: ${step}`;
-      }
+      // 步数肯定是大于0的，直接添加到内容中
+      content += `\n👟 步数: ${step}`;
       
       // 发送通知
       try {
-        await sendNotification(content);
+        console.log('🔔 正在发送失败通知...');
+        await sendNotification(title, content);
       } catch (notifyError) {
         console.error(`📳 发送通知时出错: ${notifyError.message}`);
       }
+    } else if (enableNotify) {
+      console.log('ℹ️ 执行成功，跳过发送通知');
     }
   }
 })(); 

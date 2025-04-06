@@ -1,8 +1,8 @@
 <div align="center">
 
-# 小米运动健康修改步数
+# 小米运动健康刷步数
 
-[![GitHub Actions](https://github.com/chiupam/xmSport/actions/workflows/xmsport.yml/badge.svg)](https://github.com/chiupam/xmSport/actions)
+[![小米运动](https://img.shields.io/badge/小米运动-passing-success.svg?style=flat-square&logo=xiaomi&logoWidth=20&logoColor=white)](https://github.com/chiupam/xmSport/actions)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow.svg?style=flat-square&logo=javascript)](https://www.javascript.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-16.x-green.svg?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![GitHub stars](https://img.shields.io/github/stars/chiupam/xmSport?style=flat-square&logo=github)](https://github.com/chiupam/xmSport/stargazers)
@@ -28,27 +28,28 @@
 
 ### 🔑 必需的环境变量
 
-| 名称 | 必填 | 说明 |
-|------|:----:|------|
-| `PHONE_NUMBER` | ✓ | 小米运动/小米健康账号绑定的手机号（不含+86） |
-| `PASSWORD` | ✓ | 账号密码 |
-| `DATA_JSON` | ✓ | 直接使用仓库中`./src/data.txt`文件的内容 |
-| `xmSportMinStep` | ✗ | 最小步数，默认10000 |
-| `xmSportMaxStep` | ✗ | 最大步数，默认19999 |
-| `ENABLE_NOTIFY` | ✗ | 是否启用通知功能，设置为`true`时启用，默认不启用 |
+| 名称 | 必填 | 说明 | 默认值 |
+|------|:----:|------| ----- |
+| `PHONE_NUMBER` | ✅ | 小米运动/小米健康账号绑定的手机号（不含+86） | 无 |
+| `PASSWORD` | ✅ | 账号密码 | 无 |
+| `xmSportMinStep` | ❌ | 最小步数 | 10000 |
+| `xmSportMaxStep` | ❌ | 最大步数 | 19999 |
+| `ENABLE_NOTIFY` | ❌ | 是否启用通知功能，设置为`true`时启用 | false |
 
-### 📲 通知相关环境变量（均可选）
+#### 📲 通知配置
 
-| 名称 | 说明 |
-|------|------|
-| `SERVERCHAN_KEY` | Server酱发送KEY (SCKey) |
-| `BARK_KEY` | Bark推送KEY或完整URL |
-| `TG_BOT_TOKEN` | Telegram Bot Token |
-| `TG_CHAT_ID` | Telegram Chat ID |
-| `DINGTALK_WEBHOOK` | 钉钉Webhook地址 |
-| `DINGTALK_SECRET` | 钉钉安全密钥 |
-| `WECOM_KEY` | 企业微信Webhook Key |
-| `PUSHPLUS_TOKEN` | PushPlus Token |
+启用通知推送功能后（`ENABLE_NOTIFY=true`），可以配置以下通知渠道（至少需要配置一个）：
+
+| 变量名 | 说明 | 参考文档 |
+| ----- | ---- | ------- |
+| `SERVERCHAN_KEY` | Server酱的推送密钥 | [Server酱文档](https://sct.ftqq.com/) |
+| `BARK_KEY` | Bark推送密钥或完整URL | [Bark文档](https://github.com/Finb/Bark) |
+| `TG_BOT_TOKEN` | Telegram机器人Token | [Telegram Bot API](https://core.telegram.org/bots/api) |
+| `TG_CHAT_ID` | Telegram接收消息的用户或群组ID | [获取Chat ID教程](https://core.telegram.org/bots/features#chat-id) |
+| `DINGTALK_WEBHOOK` | 钉钉机器人的Webhook URL | [钉钉自定义机器人文档](https://open.dingtalk.com/document/robots/custom-robot-access) |
+| `DINGTALK_SECRET` | 钉钉机器人的安全密钥(可选) | 同上 |
+| `WECOM_KEY` | 企业微信机器人的WebHook Key | [企业微信机器人文档](https://developer.work.weixin.qq.com/document/path/91770) |
+| `PUSHPLUS_TOKEN` | PushPlus推送Token | [PushPlus文档](https://www.pushplus.plus/) |
 
 3. GitHub Actions将按计划自动运行
 
@@ -71,14 +72,15 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
 
 仓库中已经包含了`src/data.txt`文件，其中包含小米运动的数据模板：
 
-- ✅ 该文件已经可以直接使用，不需要额外修改
-- 📋 设置GitHub Secrets时，可以直接复制此文件内容到`DATA_JSON`中
+- ✅ 工作流会自动读取该文件内容，无需手动设置环境变量
+- 🔄 如需修改数据模板，只需直接编辑该文件，推送后自动生效
 
 ## 📲 通知功能
 
-脚本执行完成后，可以通过多种渠道接收通知：
+脚本执行失败时，可以通过多种渠道接收通知：
 
 - 需要先设置`ENABLE_NOTIFY`为`true`来启用通知功能
+- 仅在修改步数失败时才会发送通知，成功时不会打扰您
 - **Server酱**：微信推送，设置`SERVERCHAN_KEY`环境变量
 - **Bark**：iOS推送，设置`BARK_KEY`环境变量
 - **Telegram**：设置`TG_BOT_TOKEN`和`TG_CHAT_ID`环境变量
@@ -109,4 +111,51 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
 
 ## 📜 许可证
 
-本项目采用 [MIT 许可证](LICENSE) 进行许可。 
+本项目采用 [MIT 许可证](LICENSE) 进行许可。
+
+## 🧪 本地测试
+
+如果你想在本地测试脚本，可以按照以下步骤操作：
+
+1. 克隆仓库到本地
+   ```bash
+   git clone https://github.com/your-username/xmSport.git
+   cd xmSport
+   ```
+
+2. 安装依赖
+   ```bash
+   npm install
+   ```
+
+3. 创建环境变量文件
+   ```bash
+   cp .env.example .env
+   ```
+
+4. 编辑`.env`文件，填入你的个人信息
+   - 修改`PHONE_NUMBER`和`PASSWORD`为你的账号信息
+   - `DATA_JSON`会通过测试脚本自动读取，无需手动设置
+
+5. 运行测试脚本（推荐）
+   ```bash
+   npm test
+   ```
+   这个命令会自动读取`src/data.txt`文件内容并设置为环境变量
+
+6. 调试失败通知（可选）
+   ```bash
+   npm run test:fail
+   ```
+   这个命令使用错误的账号密码来触发失败通知
+
+### 手动方式测试（可选）
+
+如果你希望手动控制环境变量，可以：
+
+1. 打开`src/data.txt`文件，复制其内容
+2. 将内容粘贴到`.env`文件的`DATA_JSON=`后面（注意转义特殊字符）
+3. 使用以下命令运行：
+   ```bash
+   npm run test:env
+   ``` 
