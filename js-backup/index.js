@@ -1,10 +1,10 @@
 // xmSport GitHub Action 脚本
 const axios = require('axios');
 const core = require('@actions/core');
-const { processData } = require('./dataProcessor');
-const { getCode, getLoginTokenAndUserId, getAppToken, sendData } = require('./apiService');
-const { getRandomInt, formatDate } = require('./utils');
-const { sendNotification, getNotifyTitle } = require('./notify');
+const { processData } = require('../src/dataProcessor');
+const { getCode, getLoginTokenAndUserId, getAppToken, sendData } = require('../src/apiService');
+const { getRandomInt, formatDate } = require('../src/utils');
+const { sendNotification, getNotifyTitle } = require('../src/notify');
 
 // 执行主函数 - 使用立即执行的异步函数表达式
 (async () => {

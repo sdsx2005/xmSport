@@ -2,7 +2,7 @@
  * 通知模块 - 支持多种推送渠道发送脚本运行结果通知
  */
 const axios = require('axios');
-const { formatDate } = require('./utils');
+const { formatDate } = require('../src/utils');
 
 /**
  * 构建通知标题

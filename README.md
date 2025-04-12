@@ -71,7 +71,6 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
 4. 点击 "Run workflow" 确认运行
 
 > 💡 **提示**：手动触发时会使用您在GitHub Secrets中配置的环境变量，如果没有配置则使用默认值。
-- `maxStep`: 最大步数，默认为19999
 
 ## 📝 数据模板
 
@@ -97,12 +96,87 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
 
 ## 📂 文件结构
 
-- `src/index.js`: 主脚本文件，负责请求处理和步数提交
-- `src/dataProcessor.js`: 数据处理模块，负责处理和生成数据
-- `src/apiService.js`: API服务模块，处理与小米服务器的通信
-- `src/notify.js`: 通知模块，支持多种渠道推送结果
-- `src/utils.js`: 工具函数模块，提供各种通用功能
-- `src/data.txt`: 数据模板文件（已包含在仓库中）
+```
+xmSport/
+├── .github/                          # GitHub相关配置
+│   └── workflows/                    # GitHub Actions工作流
+│       ├── build.yml                 # TypeScript构建工作流
+│       └── xmsport.yml               # 主要运行工作流
+├── src/                              # 源代码目录
+│   ├── types/                        # 类型定义
+│   │   ├── apiService.types.ts       # API服务相关类型
+│   │   ├── dataProcessor.types.ts    # 数据处理相关类型
+│   │   ├── index.ts                  # 类型导出索引
+│   │   ├── main.types.ts             # 主程序相关类型
+│   │   └── notify.types.ts           # 通知服务相关类型
+│   ├── apiService.ts                 # API服务模块，处理与小米服务器的通信
+│   ├── dataProcessor.ts              # 数据处理模块，负责处理和生成数据
+│   ├── index.ts                      # 主脚本文件，负责请求处理和步数提交
+│   ├── local-test.ts                 # 本地测试脚本
+│   ├── notify.ts                     # 通知模块，支持多种渠道推送结果
+│   ├── utils.ts                      # 工具函数模块，提供各种通用功能
+│   └── data.txt                      # 数据模板文件
+├── dist/                             # 编译后的JavaScript文件目录
+│   ├── types/                        # 编译后的类型定义
+│   ├── apiService.js                 # 编译后的API服务模块
+│   ├── dataProcessor.js              # 编译后的数据处理模块
+│   ├── index.js                      # 编译后的主脚本文件
+│   ├── local-test.js                 # 编译后的本地测试脚本
+│   ├── notify.js                     # 编译后的通知模块
+│   ├── utils.js                      # 编译后的工具函数模块
+│   └── data.txt                      # 复制的数据模板文件
+├── js-backup/                        # JavaScript原始文件备份
+├── tsconfig.json                     # TypeScript配置文件
+├── package.json                      # 项目依赖和脚本配置
+└── README.md                         # 项目说明文档
+```
+
+### 主要文件说明
+
+- **src/index.ts**: 程序入口点，处理环境变量，调用API服务和通知服务
+- **src/apiService.ts**: 包含与小米运动API交互的所有函数，包括登录、获取token和发送步数数据
+- **src/dataProcessor.ts**: 负责处理数据模板，替换步数和日期
+- **src/notify.ts**: 负责发送通知到多个平台(Server酱、Bark、Telegram等)
+- **src/utils.ts**: 包含通用工具函数，如时间格式化、随机数生成和URL参数转换
+- **src/types/**: 按模块组织的类型定义文件，提高代码的类型安全性
+
+## 🔧 开发说明
+
+本项目使用TypeScript开发，提供更好的类型安全和开发体验。源代码在`src`目录下，编译后的JavaScript文件在`dist`目录下。
+
+### 自动构建
+
+当你推送TypeScript源文件变更到GitHub仓库时，会自动触发构建工作流，将TypeScript编译为JavaScript并提交到`dist`目录。GitHub Actions工作流运行时使用的是编译后的JavaScript文件。
+
+### 本地开发
+
+如果你想在本地进行开发，请按照以下步骤：
+
+1. 克隆仓库到本地
+   ```bash
+   git clone https://github.com/chiupam/xmSport.git
+   cd xmSport
+   ```
+
+2. 安装依赖
+   ```bash
+   npm install
+   ```
+
+3. 编译TypeScript
+   ```bash
+   npm run build
+   ```
+
+4. 编辑源代码后重新构建
+   ```bash
+   npm run build
+   ```
+
+5. 或者启用开发模式，自动监视文件变化
+   ```bash
+   npm run dev
+   ```
 
 ## ⚠️ 免责声明
 
@@ -124,7 +198,7 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
 
 1. 克隆仓库到本地
    ```bash
-   git clone https://github.com/your-username/xmSport.git
+   git clone https://github.com/chipam/xmSport.git
    cd xmSport
    ```
 

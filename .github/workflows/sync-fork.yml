@@ -7,6 +7,10 @@ on:
   # 允许手动触发
   workflow_dispatch:
 
+# 添加权限配置
+permissions:
+  contents: write  # 需要写入权限才能提交
+
 jobs:
   sync-upstream:
     runs-on: ubuntu-latest

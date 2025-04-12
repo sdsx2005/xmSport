@@ -3,7 +3,7 @@
  * 包含与小米运动API通信的核心功能
  */
 const axios = require('axios');
-const { toQueryString } = require('./utils');
+const { toQueryString } = require('../src/utils');
 
 // 辅助函数：延时等待
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));

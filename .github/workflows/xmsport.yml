@@ -37,7 +37,7 @@ jobs:
       - name: 读取数据模板文件
         id: data-json
         run: |
-          DATA_CONTENT=$(cat src/data.txt)
+          DATA_CONTENT=$(cat dist/data.txt)
           echo "DATA_JSON<<EOF" >> $GITHUB_ENV
           echo "$DATA_CONTENT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -60,7 +60,7 @@ jobs:
           DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
           WECOM_KEY: ${{ secrets.WECOM_KEY }}
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
-        run: node src/index.js
+        run: node dist/index.js
       
       - name: 处理结果
         if: always()
