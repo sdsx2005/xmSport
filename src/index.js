@@ -43,16 +43,13 @@ const { sendNotification, getNotifyTitle } = require('./notify');
     }
     
     // 获取步数范围
-    const minStep = parseInt(process.env.xmSportMinStep || '10000', 10);
-    const maxStep = parseInt(process.env.xmSportMaxStep || '19999', 10);
-    
-    // 验证步数范围的有效性
-    if (minStep <= 0) {
-      throw new Error('最小步数必须大于0');
-    }
-    
+    var minStep = parseInt(process.env.xmSportMinStep || '10000', 10);
+    var maxStep = parseInt(process.env.xmSportMaxStep || '19999', 10);
+
+    // 验证步数范围
     if (maxStep <= minStep) {
-      throw new Error('最大步数必须大于最小步数');
+      console.log('⚠️ 最大步数小于等于最小步数，自动交换值');
+      [minStep, maxStep] = [maxStep, minStep];
     }
     
     console.log(`👟 步数范围: ${minStep} - ${maxStep}`);

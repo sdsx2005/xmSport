@@ -32,8 +32,8 @@
 |------|:----:|------| ----- |
 | `PHONE_NUMBER` | ✅ | 小米运动/小米健康账号绑定的手机号（不含+86） | 无 |
 | `PASSWORD` | ✅ | 账号密码 | 无 |
-| `xmSportMinStep` | ❌ | 最小步数 | 10000 |
-| `xmSportMaxStep` | ❌ | 最大步数 | 19999 |
+| `xmSportMinStep` | ❌ | 最小步数 | 20000 |
+| `xmSportMaxStep` | ❌ | 最大步数 | 22000 |
 | `ENABLE_NOTIFY` | ❌ | 是否启用通知功能，设置为`true`时启用 | false |
 
 #### 📲 通知配置
@@ -61,11 +61,16 @@ GitHub Actions工作流程配置在`.github/workflows/xmsport.yml`文件中：
 - 👆 支持手动触发工作流程并设置自定义步数范围
 - 🟢 使用Node.js环境运行脚本
 
-## 🔧 手动触发
+## 🖱️ 手动触发签到
 
-在GitHub仓库页面的Actions标签页中，你可以手动触发工作流，并设置自定义的步数范围：
+如果你想立即测试签到功能，可以手动触发：
 
-- `minStep`: 最小步数，默认为10000
+1. 进入 "Actions" 标签
+2. 选择 "小米运动修改步数" workflow
+3. 点击 "Run workflow" 按钮
+4. 点击 "Run workflow" 确认运行
+
+> 💡 **提示**：手动触发时会使用您在GitHub Secrets中配置的环境变量，如果没有配置则使用默认值。
 - `maxStep`: 最大步数，默认为19999
 
 ## 📝 数据模板

@@ -3,23 +3,7 @@ name: 小米运动修改步数
 on:
   schedule:
     - cron: '00 12,13 * * *'  # UTC时间12:00和13:00运行，对应北京时间20:00和21:00(但是存在严重的延迟)
-  workflow_dispatch:     # 允许手动触发
-    inputs:
-      minStep:
-        description: '最小步数'
-        required: false
-        default: '10000'
-        type: string
-      maxStep:
-        description: '最大步数'
-        required: false
-        default: '19999'
-        type: string
-      enableNotify:
-        description: '是否启用通知功能'
-        required: false
-        default: 'false'
-        type: boolean
+  workflow_dispatch:     # 允许手动触发，不再需要输入参数
 
 jobs:
   xmSport:
@@ -64,9 +48,9 @@ jobs:
           PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
           PASSWORD: ${{ secrets.PASSWORD }}
           # DATA_JSON由上一步自动设置，不再需要用户手动配置
-          xmSportMinStep: ${{ github.event.inputs.minStep || secrets.xmSportMinStep || '10000' }}
-          xmSportMaxStep: ${{ github.event.inputs.maxStep || secrets.xmSportMaxStep || '19999' }}
-          ENABLE_NOTIFY: ${{ github.event.inputs.enableNotify || secrets.ENABLE_NOTIFY || 'false' }}
+          xmSportMinStep: ${{ secrets.xmSportMinStep || '20000' }}
+          xmSportMaxStep: ${{ secrets.xmSportMaxStep || '22000' }}
+          ENABLE_NOTIFY: ${{ secrets.ENABLE_NOTIFY || 'false' }}
           # 通知相关环境变量
           SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
           BARK_KEY: ${{ secrets.BARK_KEY }}
