@@ -4,6 +4,7 @@
 
 [![小米运动](https://img.shields.io/badge/小米运动-passing-success.svg?style=flat-square&logo=xiaomi&logoWidth=20&logoColor=white)](https://github.com/chiupam/xmSport/actions)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow.svg?style=flat-square&logo=javascript)](https://www.javascript.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-16.x-green.svg?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![GitHub stars](https://img.shields.io/github/stars/chiupam/xmSport?style=flat-square&logo=github)](https://github.com/chiupam/xmSport/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/chiupam/xmSport?style=flat-square&logo=github)](https://github.com/chiupam/xmSport/network/members)
@@ -126,9 +127,13 @@ xmSport/
 │   ├── utils.js                      # 编译后的工具函数模块
 │   └── data.txt                      # 复制的数据模板文件
 ├── js-backup/                        # JavaScript原始文件备份
-├── tsconfig.json                     # TypeScript配置文件
+├── .env.example                      # 环境变量示例文件
+├── .gitignore                        # Git忽略文件配置
+├── LICENSE                           # 开源协议
 ├── package.json                      # 项目依赖和脚本配置
-└── README.md                         # 项目说明文档
+├── README.md                         # 项目说明文档
+└── tsconfig.json                     # TypeScript配置文件
+
 ```
 
 ### 主要文件说明
