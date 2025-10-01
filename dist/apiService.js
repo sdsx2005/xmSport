@@ -79,12 +79,6 @@ function executeRequest(config) {
     });
 }
 /**
- * 获取登录Code
- * @param {string} phoneNumber - 手机号
- * @param {string} password - 密码
- * @returns {Promise<string>} 登录Code
- */
-/**
  * 获取登录Code及thirdName
  * @param {string} phoneNumber - 手机号
  * @param {string} password - 密码
