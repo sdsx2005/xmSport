@@ -68,7 +68,7 @@ import { sendNotification, getNotifyTitle } from './notify';
     
     // 1. 获取code
     console.log('🔄 第1步: 获取登录Code...');
-    const code = await getCode(phoneNumber, password);
+    const {code, thirdName} = await getCode(phoneNumber, password);
     // 如果code为空，则退出，且发送失败通知
     if (!code) {
       const title = getNotifyTitle();
@@ -81,7 +81,7 @@ import { sendNotification, getNotifyTitle } from './notify';
     
     // 2. 获取loginToken和userId
     console.log('🔄 第2步: 获取LoginToken和UserId...');
-    const { loginToken, userId } = await getLoginTokenAndUserId(code);
+    const { loginToken, userId } = await getLoginTokenAndUserId(code, thirdName);
     
     // 3. 获取appToken
     console.log('🔄 第3步: 获取AppToken...');

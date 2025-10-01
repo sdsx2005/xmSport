@@ -84,20 +84,35 @@ function executeRequest(config) {
  * @param {string} password - 密码
  * @returns {Promise<string>} 登录Code
  */
+/**
+ * 获取登录Code及thirdName
+ * @param {string} phoneNumber - 手机号
+ * @param {string} password - 密码
+ * @returns {Promise<{ code: string, thirdName: string }>} 登录Code和thirdName
+ */
 function getCode(phoneNumber, password) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const getLoginCode = () => __awaiter(this, void 0, void 0, function* () {
                 // 构造请求配置
-                const url = `https://api-user.huami.com/registrations/+86${phoneNumber}/tokens`;
+                const PHONE_PATTERN = /^(1)\d{10}$/;
+                const isPhone = PHONE_PATTERN.test(phoneNumber);
+                const processedPhone = isPhone ? `+86${phoneNumber}` : phoneNumber;
+                const thirdName = isPhone ? 'huami_phone' : 'huami';
+                const url = `https://api-user.huami.com/registrations/${processedPhone}/tokens`;
                 const headers = {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                    'User-Agent': 'MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)'
+                    'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    'user-agent': 'MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)',
+                    "app_name": "com.xiaomi.hm.health",
                 };
                 const data = {
                     client_id: 'HuaMi',
+                    country_code: 'CN',
+                    json_response: 'true',
+                    name: processedPhone,
                     password: password,
                     redirect_uri: 'https://s3-us-west-2.amazonaws.com/hm-registration/successsignin.html',
+                    state: 'REDIRECTION',
                     token: 'access'
                 };
                 const response = yield axios_1.default.post(url, (0, utils_1.toQueryString)(data), {
@@ -105,20 +120,18 @@ function getCode(phoneNumber, password) {
                     maxRedirects: 0,
                     validateStatus: status => status >= 200 && status < 400
                 });
-                const location = response.headers.location;
-                if (!location) {
-                    throw new Error('无法获取重定向地址');
+                // 返回 access code 和 thirdName
+                if (response.data && response.data.access) {
+                    return { code: response.data.access, thirdName };
                 }
-                const codeMatch = /(?<=access=).*?(?=&)/.exec(location);
-                if (!codeMatch || !codeMatch[0]) {
-                    throw new Error('无法从重定向地址中提取code');
+                else {
+                    throw new Error('未能获取到code');
                 }
-                return codeMatch[0];
             });
             // 使用withRetry执行请求
-            const code = yield withRetry(getLoginCode, [], '获取登录Code');
+            const result = yield withRetry(getLoginCode, [], '获取登录Code');
             console.log('🔐 获取Code成功');
-            return code;
+            return result;
         }
         catch (error) {
             console.error(`获取登录Code出错: ${error.message}`);
@@ -126,7 +139,7 @@ function getCode(phoneNumber, password) {
                 console.error(`状态码: ${error.response.status}`);
                 console.error(`响应数据: ${JSON.stringify(error.response.data)}`);
             }
-            return '';
+            return { code: '', thirdName: '' };
         }
     });
 }
@@ -135,23 +148,26 @@ function getCode(phoneNumber, password) {
  * @param {string} code - 登录Code
  * @returns {Promise<LoginTokenAndUserIdResult>} 登录Token和用户ID
  */
-function getLoginTokenAndUserId(code) {
+function getLoginTokenAndUserId(code, thirdName) {
     return __awaiter(this, void 0, void 0, function* () {
         const getTokenAndUserId = () => __awaiter(this, void 0, void 0, function* () {
             const url = 'https://account.huami.com/v2/client/login';
             const headers = {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                'User-Agent': 'MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)'
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'User-Agent': 'MiFit/6.12.0 (MCE16; Android 16; Density/1.5)'
             };
+            // 按照新要求重写data
             const data = {
                 app_name: 'com.xiaomi.hm.health',
-                app_version: '4.6.0',
-                code: code,
                 country_code: 'CN',
-                device_id: '2C8B4939-0CCD-4E94-8CBA-CB8EA6E613A1',
-                device_model: 'phone',
+                code: code,
+                device_id: '02:00:00:00:00:00',
+                device_model: 'android_phone',
+                app_version: '6.12.0',
                 grant_type: 'access_token',
-                third_name: 'huami_phone'
+                allow_registration: 'false',
+                source: 'com.xiaomi.hm.health',
+                third_name: thirdName
             };
             const response = yield axios_1.default.post(url, (0, utils_1.toQueryString)(data), {
                 headers: headers

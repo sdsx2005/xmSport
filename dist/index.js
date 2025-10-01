@@ -97,7 +97,7 @@ const notify_1 = require("./notify");
         const password = process.env.PASSWORD;
         // 1. 获取code
         console.log('🔄 第1步: 获取登录Code...');
-        const code = yield (0, apiService_1.getCode)(phoneNumber, password);
+        const { code, thirdName } = yield (0, apiService_1.getCode)(phoneNumber, password);
         // 如果code为空，则退出，且发送失败通知
         if (!code) {
             const title = (0, notify_1.getNotifyTitle)();
@@ -109,7 +109,7 @@ const notify_1 = require("./notify");
         }
         // 2. 获取loginToken和userId
         console.log('🔄 第2步: 获取LoginToken和UserId...');
-        const { loginToken, userId } = yield (0, apiService_1.getLoginTokenAndUserId)(code);
+        const { loginToken, userId } = yield (0, apiService_1.getLoginTokenAndUserId)(code, thirdName);
         // 3. 获取appToken
         console.log('🔄 第3步: 获取AppToken...');
         const appToken = yield (0, apiService_1.getAppToken)(loginToken);
