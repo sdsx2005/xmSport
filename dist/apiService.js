@@ -102,7 +102,7 @@ function getCode(phoneNumber, password) {
                 const url = `https://api-user.huami.com/registrations/${processedPhone}/tokens`;
                 const headers = {
                     'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                    'user-agent': 'MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)',
+                    'user-agent': 'MiFit/6.12.0 (MCE16; Android 16; Density/1.5)',
                     "app_name": "com.xiaomi.hm.health",
                 };
                 const data = {
@@ -153,8 +153,8 @@ function getLoginTokenAndUserId(code, thirdName) {
         const getTokenAndUserId = () => __awaiter(this, void 0, void 0, function* () {
             const url = 'https://account.huami.com/v2/client/login';
             const headers = {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'User-Agent': 'MiFit/6.12.0 (MCE16; Android 16; Density/1.5)'
+                'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                'user-agent': 'MiFit/6.12.0 (MCE16; Android 16; Density/1.5)'
             };
             // 按照新要求重写data
             const data = {
@@ -195,7 +195,7 @@ function getAppToken(loginToken) {
         const fetchAppToken = () => __awaiter(this, void 0, void 0, function* () {
             const url = `https://account-cn.huami.com/v1/client/app_tokens?app_name=com.xiaomi.hm.health&dn=api-user.huami.com,api-mifit.huami.com,app-analytics.huami.com&login_token=${loginToken}`;
             const headers = {
-                'User-Agent': 'MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)'
+                'user-agent': 'MiFit/6.12.0 (MCE16; Android 16; Density/1.5)'
             };
             const response = yield axios_1.default.get(url, {
                 headers: headers
@@ -223,7 +223,7 @@ function sendData(userId, appToken, dataJson) {
         const sendDataRequest = () => __awaiter(this, void 0, void 0, function* () {
             const url = `https://api-mifit-cn2.huami.com/v1/data/band_data.json`;
             const headers = {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
                 'apptoken': appToken
             };
             const data = {
